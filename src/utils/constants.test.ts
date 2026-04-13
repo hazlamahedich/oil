@@ -91,6 +91,10 @@ describe('FRESHNESS_THRESHOLDS', () => {
       },
     ]);
   });
+
+  it('is frozen', () => {
+    expect(Object.isFrozen(FRESHNESS_THRESHOLDS)).toBe(true);
+  });
 });
 
 describe('SIMULATION_DEFAULTS', () => {
@@ -101,6 +105,10 @@ describe('SIMULATION_DEFAULTS', () => {
       severity: 50,
     });
   });
+
+  it('is frozen', () => {
+    expect(Object.isFrozen(SIMULATION_DEFAULTS)).toBe(true);
+  });
 });
 
 describe('SIMULATION_RANGES', () => {
@@ -108,6 +116,21 @@ describe('SIMULATION_RANGES', () => {
     expect(SIMULATION_RANGES.oilPrice).toEqual({ min: 70, max: 160 });
     expect(SIMULATION_RANGES.duration).toEqual({ min: 1, max: 18 });
     expect(SIMULATION_RANGES.severity).toEqual({ min: 10, max: 100 });
+  });
+
+  it('is frozen', () => {
+    expect(Object.isFrozen(SIMULATION_RANGES)).toBe(true);
+  });
+});
+
+describe('SIMULATION_DEFAULTS within SIMULATION_RANGES', () => {
+  it('defaults fall within ranges', () => {
+    expect(SIMULATION_DEFAULTS.oilPrice).toBeGreaterThanOrEqual(SIMULATION_RANGES.oilPrice.min);
+    expect(SIMULATION_DEFAULTS.oilPrice).toBeLessThanOrEqual(SIMULATION_RANGES.oilPrice.max);
+    expect(SIMULATION_DEFAULTS.duration).toBeGreaterThanOrEqual(SIMULATION_RANGES.duration.min);
+    expect(SIMULATION_DEFAULTS.duration).toBeLessThanOrEqual(SIMULATION_RANGES.duration.max);
+    expect(SIMULATION_DEFAULTS.severity).toBeGreaterThanOrEqual(SIMULATION_RANGES.severity.min);
+    expect(SIMULATION_DEFAULTS.severity).toBeLessThanOrEqual(SIMULATION_RANGES.severity.max);
   });
 });
 

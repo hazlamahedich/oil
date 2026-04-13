@@ -50,7 +50,7 @@ export function formatPrice(value: number): string {
       `formatPrice: expected non-negative, got ${value}`,
     );
   }
-  return `$${priceFmt.format(value)}`;
+  return `$${priceFmt.format(value === 0 ? 0 : value)}`;
 }
 
 export function formatGas(
@@ -67,7 +67,7 @@ export function formatGas(
       `formatGas: expected non-negative, got ${value}`,
     );
   }
-  return `${gasFmt.format(value)} ${unit}`;
+  return `${gasFmt.format(value === 0 ? 0 : value)} ${unit}`;
 }
 
 export function formatInflation(value: number): string {

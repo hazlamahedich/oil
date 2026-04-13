@@ -42,3 +42,9 @@
 - **PanelConfig.sourceBadge.confidence scale ambiguous** — Scale determined during panel implementation (1C+).
 - **Test count assertions verify local arrays, not exports** — Imports catch missing exports at compile time; counts are sanity checks.
 - **Union exhaustiveness tests missing** — Nice-to-have; not an AC requirement.
+
+## Deferred from: code review of 1b-2-constants-format-utilities (2026-04-13)
+
+- **`formatDate` accepts semantically invalid dates like "2026-02-30"** — Spec explicitly states "structural regex only — does NOT validate real calendar dates." Intentional design choice. [src/utils/format.ts:92-98]
+- **`SIMULATION_RANGES` `as const` may be redundant with type annotation** — Pre-existing design choice with no runtime impact. Both annotation and assertion are present; no behavior difference. [src/utils/constants.ts:38-44]
+- **No invariant test for `SIMULATION_DEFAULTS` within `SIMULATION_RANGES` bounds** — Cross-constant invariant testing adds coupling between independent constants. Defaults and ranges are independently specified by FR requirements.

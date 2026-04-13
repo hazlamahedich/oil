@@ -69,6 +69,14 @@ describe('formatPrice', () => {
     expect(() => formatPrice(Infinity)).toThrow(TypeError);
   });
 
+  it('formats 0 as "$0.00"', () => {
+    expect(formatPrice(0)).toBe('$0.00');
+  });
+
+  it('handles negative zero as "$0.00"', () => {
+    expect(formatPrice(-0)).toBe('$0.00');
+  });
+
   it('error message contains function name', () => {
     expect(() => formatPrice(-1)).toThrow('formatPrice');
   });
@@ -94,6 +102,10 @@ describe('formatGas', () => {
 
   it('throws TypeError on NaN', () => {
     expect(() => formatGas(NaN, 'USD/MMBtu')).toThrow(TypeError);
+  });
+
+  it('throws TypeError on Infinity', () => {
+    expect(() => formatGas(Infinity, 'USD/MMBtu')).toThrow(TypeError);
   });
 
   it('error message contains function name', () => {
@@ -122,6 +134,10 @@ describe('formatInflation', () => {
     expect(() => formatInflation(NaN)).toThrow(TypeError);
   });
 
+  it('throws TypeError on Infinity', () => {
+    expect(() => formatInflation(Infinity)).toThrow(TypeError);
+  });
+
   it('error message contains function name', () => {
     expect(() => formatInflation(NaN)).toThrow('formatInflation');
   });
@@ -146,6 +162,10 @@ describe('formatGDP', () => {
 
   it('throws TypeError on NaN', () => {
     expect(() => formatGDP(NaN)).toThrow(TypeError);
+  });
+
+  it('throws TypeError on Infinity', () => {
+    expect(() => formatGDP(Infinity)).toThrow(TypeError);
   });
 
   it('error message contains function name', () => {
@@ -202,6 +222,10 @@ describe('formatPercent', () => {
 
   it('throws TypeError on NaN', () => {
     expect(() => formatPercent(NaN)).toThrow(TypeError);
+  });
+
+  it('throws TypeError on Infinity', () => {
+    expect(() => formatPercent(Infinity)).toThrow(TypeError);
   });
 
   it('error message contains function name', () => {

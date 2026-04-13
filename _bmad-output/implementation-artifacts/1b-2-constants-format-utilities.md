@@ -1,6 +1,6 @@
 # Story 1B.2: Constants & Format Utilities
 
-Status: review
+Status: done
 
 ## Story
 
@@ -356,3 +356,15 @@ GLM-5.1 (zai-coding-plan/glm-5.1)
 - `src/utils/constants.test.ts` — created (10 tests)
 - `src/utils/format.test.ts` — created (51 tests)
 - `src/types/index.test.ts` — modified (removed unused duplicate import, fixing pre-existing lint error)
+
+### Review Findings (2026-04-13)
+
+- [x] [Review][Patch] `FRESHNESS_THRESHOLDS`, `SIMULATION_DEFAULTS`, `SIMULATION_RANGES` not frozen — wrapped all three in `Object.freeze()`. Shallow freeze per agent consensus (Winston/Amelia/Murat). [`src/utils/constants.ts:20,33,40`]
+- [x] [Review][Patch] Missing `Object.isFrozen()` tests for FRESHNESS_THRESHOLDS, SIMULATION_DEFAULTS, SIMULATION_RANGES — added. Also added defaults-within-ranges invariant test. [`src/utils/constants.test.ts`]
+- [x] [Review][Patch] Missing `formatPrice(0)` and `formatPrice(-0)` test — added. Also fixed `formatPrice(-0)` returning `"$-0.00"` by normalizing negative zero. [`src/utils/format.ts:53`, `src/utils/format.test.ts`]
+- [x] [Review][Patch] Missing `formatGas` Infinity test — added. [`src/utils/format.test.ts`]
+- [x] [Review][Patch] Missing `formatInflation` / `formatGDP` / `formatPercent` Infinity tests — added. [`src/utils/format.test.ts`]
+- [x] [Review][Patch] `formatPrice` and `formatGas` negative zero produces `"-0.00"` — added same `value === 0 ? 0 : value` normalization as `formatOilProduction`. [`src/utils/format.ts:53,70`]
+- [x] [Review][Defer] `formatDate` accepts semantically invalid dates like `"2026-02-30"` — deferred, spec explicitly states "structural regex only — does NOT validate real calendar dates" [`src/utils/format.ts:92-98`]
+- [x] [Review][Defer] `SIMULATION_RANGES` `as const` may be redundant with type annotation — deferred, pre-existing design choice with no runtime impact [`src/utils/constants.ts:38-44`]
+- [x] [Review][Defer] No invariant test for `SIMULATION_DEFAULTS` within `SIMULATION_RANGES` bounds — **resolved**: invariant test added during review patches
