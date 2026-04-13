@@ -1,0 +1,139 @@
+# generated: 2026-04-12
+# last_updated: 2026-04-12
+# project: oil
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: _bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2026-04-12
+last_updated: 2026-04-13
+project: oil
+project_key: NOKEY
+tracking_system: file-system
+story_location: _bmad-output/implementation-artifacts
+
+development_status:
+  # Epic 1A: Scaffold & Tooling Spike
+  epic-1a: in-progress
+  1a-1-project-scaffold-dependencies-design-tokens: done
+  1a-2-vite-config-build-spike-ci-setup: backlog
+  epic-1a-retrospective: optional
+
+  # Epic 1B: Data Layer & Stores
+  epic-1b: backlog
+  1b-1-typescript-interfaces-frozen-contracts: backlog
+  1b-2-constants-format-utilities: backlog
+  1b-3-motion-accessibility-utilities: backlog
+  1b-4-data-files-with-real-data: backlog
+  1b-5-zustand-stores: backlog
+  1b-6-build-time-data-validation: backlog
+  1b-7-test-infrastructure: backlog
+  epic-1b-retrospective: optional
+
+  # Epic 1C: Shell & Navigation
+  epic-1c: backlog
+  1c-1-appshell-semantic-structure: backlog
+  1c-2-tabbar-with-14-tabs-keyboard-navigation: backlog
+  1c-3-url-state-synchronization: backlog
+  1c-4-masterstatus-crisis-indicator: backlog
+  1c-5-panel-error-boundary-skeleton-placeholders: backlog
+  1c-6-dialog-focustrap-primitives: backlog
+  epic-1c-retrospective: optional
+
+  # Epic 2: Crisis Overview & Supply
+  epic-2: backlog
+  2-1-shared-panel-components-panelshell: backlog
+  2-2-chart-infrastructure-dualprogressbar: backlog
+  2-3-overviewpanel-kpis-briefing-price-trend: backlog
+  2-4-hormuzpanel-shipping-traffic-ceasefire-status: backlog
+  2-5-disruptionpanel-memory-echo: backlog
+  epic-2-retrospective: optional
+
+  # Epic 3: Supply Chain Deep Dive
+  epic-3: backlog
+  3-1-nodegraph-svg-renderer: backlog
+  3-2-node-selection-disruption-display: backlog
+  3-3-usegraphtrace-hook-cascade-interaction: backlog
+  epic-3-retrospective: optional
+
+  # Epic 4: Economic Impact Analysis
+  epic-4: backlog
+  4-1-statusindicator-sort-infrastructure: backlog
+  4-2-gdppanel-sortable-regional-data: backlog
+  4-3-stagflationpanel-risk-indicators-baseline-comparison: backlog
+  4-4-vulnerabilitypanel-country-scores-cascade-trace: backlog
+  epic-4-retrospective: optional
+
+  # Epic 5: Scenario Simulation
+  epic-5: backlog
+  5-1-probabilitybar-compute-economic-outputs: backlog
+  5-2-scenariopanel-weighted-scenarios-comparison: backlog
+  5-3-simulatorslider-three-interactive-inputs: backlog
+  5-4-simulatorpanel-output-computation-logic: backlog
+  5-5-simulatorpanel-ui-rendering-interaction: backlog
+  epic-5-retrospective: optional
+
+  # Epic 6: Crisis Timeline & Price History
+  epic-6: backlog
+  6-1-pricechartpanel-dual-trajectory-event-markers: backlog
+  6-2-timelinepanel-chronological-events-severity: backlog
+  epic-6-retrospective: optional
+
+  # Epic 7: Policy & Energy Context
+  epic-7: backlog
+  7-1-policypanel-filterable-policy-responses: backlog
+  7-2-historypanel-crisis-comparison: backlog
+  7-3-transitionpanel-energy-indicators-direction: backlog
+  epic-7-retrospective: optional
+
+  # Epic 8: Advanced UX, Narrative & Accessibility
+  epic-8: backlog
+  8-1-cross-cutting-data-enforcement-live-region-management: backlog
+  8-2-incidentbanner-the-silence: backlog
+  8-3a-synthesis-moment: backlog
+  8-3b-fog-of-war: backlog
+  8-4a-extraction-target: backlog
+  8-4b-thread-pattern: backlog
+  8-5a-decision-capture: backlog
+  8-5b-suggestion-bar: backlog
+  8-5c-verdict-card: backlog
+  8-6a-tension-map: backlog
+  8-6b-motion-system-focus-audit-print-visual-regression: backlog
+  epic-8-retrospective: optional
+
+  # Epic 9: Production Deployment & Quality Gates
+  epic-9: backlog
+  9-1-lighthouse-ci-gate-performance-budget: backlog
+  9-2-playwright-smoke-tests-navigation-rendering: backlog
+  9-3-playwright-interaction-tests-simulator-node-selection-cross-cutting: backlog
+  9-4-vercel-deploy-cross-browser-offline-validation: backlog
+  epic-9-retrospective: optional

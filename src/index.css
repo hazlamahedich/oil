@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-canvas: #0a0a0f;
+  --bg-panel: #111118;
+  --border-structural: #1e1e2a;
+  --text-primary: #e5e5ea;
+  --text-secondary: #8e8e93;
+  --text-muted: #48484a;
+  --warning: #ffb340;
+  --cyan: #64d2ff;
+
+  --severity-critical: #ff453a;
+  --severity-warning: #ffb340;
+  --severity-elevated: #ff9500;
+  --severity-normal: #30d158;
+
+  --info: #0a84ff;
+  --success: #30d158;
+  --accent: #ff453a;
+  --purple: #bf5af2;
+
+  --text-on-critical: #ffffff;
+  --text-on-warning: #0a0a0f;
+  --text-on-elevated: #0a0a0f;
+  --text-on-stable: #0a0a0f;
+  --text-on-accent-amber: #0a0a0f;
+  --text-on-accent-cyan: #0a0a0f;
+
+  --shadow-panel: 0 1px 3px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.03);
+  --shadow-elevated: 0 4px 12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+
+  --overlay-backdrop: rgba(0, 0, 0, 0.6);
+
+  --focus-ring-color: #64d2ff;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+
+  --text-disabled: #5a5a6e;
+
+  --surface-hover: rgba(255, 255, 255, 0.05);
+  --surface-active: rgba(255, 255, 255, 0.03);
+  --surface-focus: rgba(255, 255, 255, 0.07);
+  --skeleton-pulse: rgba(255, 255, 255, 0.08);
+
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text-primary);
+  background-color: var(--bg-canvas);
+}
+
+@layer base {
+  body {
+    margin: 0;
+    background-color: var(--bg-canvas);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  *:focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+  }
+}
+
+@layer utilities {
+  .text-display {
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 1.1;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .text-value {
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 1.2;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .text-title {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.4;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .text-body {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.5;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .text-label {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 1.4;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .text-data {
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 1.4;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --text-secondary: #aeaeb2;
+    --border-structural: #2c2c3a;
+    --focus-ring-width: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
