@@ -2,7 +2,7 @@
 
 ## Project Status
 
-**Pre-implementation.** No application source code exists yet. All work is planning artifacts in `_bmad-output/`. Implementation will follow the sprint plan in `_bmad-output/implementation-artifacts/sprint-status.yaml`.
+**Epic 1A complete.** Scaffold, build pipeline, CI, and charting library validated. Application code exists in `src/`. Epic 1B (Data Layer & Stores) is next in the sprint plan at `_bmad-output/implementation-artifacts/sprint-status.yaml`.
 
 ## What This Will Be
 

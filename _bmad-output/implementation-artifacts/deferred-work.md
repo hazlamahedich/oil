@@ -26,3 +26,19 @@
 - **ESLint browser globals applied to e2e/ Node files** [eslint.config.js:20] — `globals.browser` is set for all files, but e2e/ tests run in Node. Pre-existing config.
 - **main.tsx non-null assertion on getElementById('root')** [src/main.tsx:6] — Pre-existing from 1A.1.
 - **No Playwright install step for CI** [ci.yml] — E2E stage is commented out for Epic 9. Install step (`npx playwright install --with-deps`) needed when activated.
+
+## Deferred from: code review of 1b-1-typescript-interfaces-frozen-contracts (2026-04-13)
+
+- **Numeric range constraints on SimulationInput, probability, disruptionLevel, VulnerabilityScore** — TypeScript cannot enforce numeric ranges without branded types. Design decision deferred to post-Epic 1B stability review.
+- **Date format template literal types** — ISO 8601 convention documented in project-context.md; template literal enforcement is over-engineering for provisional contracts.
+- **OilHistoryRecord/PriceRecord structural overlap** — Semantic distinction documented in JSDoc; structural subtyping acceptable.
+- **PanelState<T> unconstrained generic** — Consumers constrain T at usage sites; `extends object` would prevent valid primitive panel states.
+- **SourcedRecord.source is string despite DataSource union** — Data files (1B.4) will enforce DataSource; SourcedRecord stays flexible.
+- **PolicyResponse.country bare string** — Policy panel may reference non-FocusCountry nations; premature to constrain.
+- **CascadeNode.category bare string** — Categories enumerated in data files (1B.4); type contract stays flexible.
+- **HistoricalCrisis.year as number** — Year-only integer is pragmatic; not a full date requiring ISO 8601.
+- **SimulationResult intersection field collision risk** — Hypothetical; no current collision.
+- **SupplyChainEdge.direction potential redundancy** — Direction semantics valid for weighted/typed edges.
+- **PanelConfig.sourceBadge.confidence scale ambiguous** — Scale determined during panel implementation (1C+).
+- **Test count assertions verify local arrays, not exports** — Imports catch missing exports at compile time; counts are sanity checks.
+- **Union exhaustiveness tests missing** — Nice-to-have; not an AC requirement.

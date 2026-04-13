@@ -1,9 +1,11 @@
 ---
 project_name: 'oil'
 user_name: 'team mantis b'
-date: '2026-04-12'
+date: '2026-04-13'
 sections_completed: ['technology_stack']
 existing_patterns_found: 15
+epic_1a_complete: true
+last_retro_update: '2026-04-13'
 ---
 
 # Project Context for AI Agents
@@ -16,16 +18,16 @@ _Critical rules and patterns that AI agents must follow when implementing code i
 
 | Layer | Technology | Version | Notes |
 |---|---|---|---|
-| Framework | React | 18+ | Functional components + hooks only. No concurrent features. |
-| Language | TypeScript | Strict mode | `tsconfig.app.json` + `tsconfig.node.json` split |
-| Build | Vite | Latest | Rolldown bundler, HMR, `vite-plugin-singlefile` for prod |
-| Styling | Tailwind CSS | **3.4 (DO NOT upgrade to v4)** | Utility-first, dark theme only, CSS custom properties for tokens |
+| Framework | React | **19.2.4** | Functional components + hooks only. Template installed React 19 (architecture says "18+"). |
+| Language | TypeScript | Strict mode (`strict: true` in `tsconfig.app.json`) | `tsconfig.app.json` + `tsconfig.node.json` split. TS 6.0: `ignoreDeprecations: "6.0"` added. |
+| Build | Vite | 6.x (from template) | `vite-plugin-singlefile` for prod single-file output. Rolldown bundler, HMR. |
+| Styling | Tailwind CSS | **3.4.19 (DO NOT upgrade to v4)** | Locked via `overrides` in `package.json`. Utility-first, dark theme only, CSS custom properties for tokens. |
 | State | Zustand | Latest | Two stores only: `appStore` (UI) + `simulationStore` (simulator) |
-| Charts | Recharts | Latest | Standard charts; custom SVG for node graph only |
+| Charts | Recharts | **3.8.1** | GO decision confirmed in Epic 1A. Standard charts; custom SVG for node graph only. |
 | Class Composition | clsx | Latest | Conditional Tailwind classes |
-| Unit Tests | Vitest + RTL | Latest | Co-located test files per source file |
-| E2E Tests | Playwright | Latest | Cross-browser microscope suite (~27 tests) |
-| Deploy | Vercel (free tier) | — | Static site from Git, single HTML file output |
+| Unit Tests | Vitest + RTL | Latest | jsdom environment, co-located test files per source file |
+| E2E Tests | Playwright | Latest | Network isolation test exists in `e2e/`. Full panel suite (~27 tests) in Epic 9. |
+| Deploy | Vercel (free tier) | — | `vercel.json` configured. Static site from Git, single HTML file output. |
 
 ---
 
@@ -57,7 +59,8 @@ This is a hard constraint from AGENTS.md. Lock `tailwindcss` to `3.4.x` in `pack
 - Background: `#0a0a0f`, Panel: `#111118`, Border: `#1e1e2a`, Accent: `#ff453a`
 - All colors defined as CSS custom properties in `index.css`, referenced via `tailwind.config.ts theme.extend`
 - **Never hardcode hex values in component code** — always use theme tokens
-- CSS custom property naming: `--{semantic}-{scale}` (e.g., `--danger-500`, `--success-200`)
+- **Token naming: flat convention** (e.g., `--bg-canvas`, `--severity-critical`, `--accent-cyan`). NOT `--{semantic}-{scale}` with numeric scales. See `src/index.css` `:root` block as the authoritative source of truth.
+- **Design decisions** from Story 1A.1 resolved 6 UX spec internal conflicts — see the Design Decisions table in `_bmad-output/implementation-artifacts/1a-1-project-scaffold-dependencies-design-tokens.md` for the authoritative rulings (flat naming, focus ring `#64d2ff`, `--severity-*` prefix, Core Palette hex values, `--warning` = `#ffb340`, flat token convention).
 
 ### 6. Static Data — Zero Async, Zero API
 
@@ -174,3 +177,12 @@ export function XyzPanel() {
 ### 20. No Environment Variables Needed
 
 Zero API keys, zero backend URLs, zero environment configuration. Build mode (dev vs prod) is the only configuration axis.
+
+### 21. Bundle Size Baseline (Epic 1A)
+
+- **With Recharts**: 527.67 KB uncompressed, 157.07 KB gzipped
+- **Without Recharts**: 191.75 KB uncompressed
+- **Recharts adds**: ~336 KB uncompressed, ~97 KB gzipped
+- **CI gate**: 1.5 MB uncompressed hard fail (via `scripts/check-bundle-size.ts` postbuild hook)
+- **Headroom remaining**: ~970 KB uncompressed for 14 panels + shared components
+- Tracking in `docs/bundle-size-baseline.md`
