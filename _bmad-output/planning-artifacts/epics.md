@@ -495,26 +495,48 @@ So that the build pipeline is confirmed and the visual language foundation is re
 **And** Tailwind 3.4 is locked — no v4 upgrade possible (UX-DR124)
 **And** no @apply usage in component files (only index.css allowed)
 
-### Story 1A.2: Vite Config, Build Spike & CI Setup
+### Story 1A.2a: Vite Config, Build Spike & Recharts Proof
 
 As a **developer**,
-I want vite.config.ts configured with aliases, single-file plugin, CI pipeline running, and a confirmed build output,
-So that single-file deployment is validated and quality gates run from day one.
+I want vite.config.ts configured with single-file plugin, the build output validated against a size budget, and Recharts confirmed compatible through a real render,
+So that single-file deployment is validated and the highest-risk dependency is de-risked before any panels are built.
 
 **Acceptance Criteria:**
 
 **Given** the scaffolded project with tokens from Story 1A.1
-**When** vite.config.ts is configured with path alias `@/` -> `src/`, vite-plugin-singlefile, and the app is built
-**Then** `npm run build` produces a single index.html with all CSS/JS inlined
-**And** the single HTML file opens directly in browser with no server
-**And** bundle size (uncompressed) is measured and recorded as baseline
-**And** Recharts is confirmed compatible with single-file build (go/no-go recorded)
-**And** tsconfig.json has matching `@/` path alias
-**And** no external network calls are made from the built artifact
-**And** GitHub Actions CI workflow is configured: ESLint lint, TypeScript typecheck, Vitest unit tests on every PR
-**And** CI pipeline fails on any lint error, type error, or test failure
-**And** build-time data validation (scripts/validate-data.ts) runs as prebuild step
-**And** Vercel deployment spike validates single-file artifact serves correctly on CDN
+**When** vite.config.ts is configured with `@/` path alias, vite-plugin-singlefile, and Recharts renders a `<LineChart>` through the full build pipeline
+**Then** `npm run build` produces a single `dist/index.html` with all CSS/JS inlined
+**And** the single HTML file opens via `file://` protocol in Chrome and Firefox with no console errors
+**And** bundle size is asserted ≤ 1.5MB uncompressed via `scripts/check-bundle-size.ts` (hard fail in CI)
+**And** actual size recorded in `docs/bundle-size-baseline.md`; gzipped logged but not gated
+**And** Recharts `<LineChart>` renders 3 data points in the built artifact (go/no-go recorded)
+**And** `@/` path alias resolves in both TypeScript and Vite bundling (verified end-to-end)
+**And** `tsc --noEmit` passes with `strict: true`
+**And** zero outbound network requests from the built artifact (verified in browser DevTools)
+**And** Tailwind 3.4 locked and content paths correct; CSS purge active
+**And** `prefers-reduced-motion` rules present in built artifact
+**And** named exports only (no `export default` in `src/`)
+**And** no hardcoded hex values in component `.tsx` files
+**And** `npm run dev` still works with HMR and path aliases
+
+### Story 1A.2b: CI Pipeline & Deployment Validation
+
+As a **developer**,
+I want a GitHub Actions CI pipeline running lint, typecheck, build, and tests on every PR, plus a verified Vercel deployment,
+So that quality gates run from day one and the single-file artifact is confirmed deployable.
+
+**Acceptance Criteria:**
+
+**Given** the validated build pipeline from Story 1A.2a
+**When** CI workflow and deployment spike are configured
+**Then** GitHub Actions CI runs on every PR and push to main: lint, typecheck, build, bundle gate, Vitest
+**And** `npm run build` is an explicit CI step (the build must be validated in CI)
+**And** `.nvmrc` pins Node 20.x LTS; CI uses `node-version-file`
+**And** Playwright test opens `dist/index.html` via `file://` and asserts zero outgoing network requests
+**And** Vercel deployment spike validates artifact serves correctly (returns 200, renders React root)
+**And** CI caching configured; pipeline target < 3 minutes
+**And** CI has placeholder stage for Playwright E2E (activated in Epic 9)
+**And** all 1A.2a acceptance criteria still pass
 
 ## Epic 1B: Data Layer & Stores
 

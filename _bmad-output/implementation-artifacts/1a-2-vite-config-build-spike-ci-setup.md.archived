@@ -1,0 +1,236 @@
+# Story 1A.2: Vite Config, Build Spike & CI Setup
+
+Status: ready-for-dev
+
+## Story
+
+As a **developer**,
+I want vite.config.ts configured with single-file plugin, CI pipeline running, build output validated, and a confirmed single-file artifact,
+So that single-file deployment is validated and quality gates run from day one.
+
+## Acceptance Criteria
+
+1. **AC1 — Single-file build:** `vite-plugin-singlefile` configured in `vite.config.ts` (production builds only); `npm run build` produces a single `dist/index.html` with all CSS and JS inlined; no separate `.css` or `.js` files in `dist/`
+2. **AC2 — Browser-openable artifact:** The single `dist/index.html` file opens directly in browser (via `file://` protocol) with no server, rendering the dark-themed app correctly with all styles applied
+3. **AC3 — Bundle baseline measured:** Bundle size (uncompressed) is measured and recorded as a comment in `package.json` or a `scripts/bundle-size.txt` file; this establishes the baseline for future budget enforcement
+4. **AC4 — Recharts compatibility confirmed:** Recharts is confirmed compatible with single-file build — the app imports and renders a minimal Recharts component (e.g., a simple `<LineChart>` with 2 data points) in the build artifact; go/no-go decision recorded in Dev Notes
+5. **AC5 — Path aliases verified in build:** `@/` path alias resolves correctly in production build; `npm run build` completes with zero errors referencing path resolution
+6. **AC6 — No external network calls:** The built artifact makes zero external network requests when opened in browser (verify via browser DevTools Network tab — no outbound requests)
+7. **AC7 — tsconfig.json has matching `@/` path alias:** Already configured in Story 1A.1 — verify still present and consistent with `vite.config.ts`
+8. **AC8 — GitHub Actions CI workflow:** `.github/workflows/ci.yml` configured to run on every PR and push to main: ESLint lint (`npm run lint`), TypeScript typecheck (`npx tsc --noEmit` or via `npm run build`), Vitest unit tests (`npm run test`); pipeline fails on any lint error, type error, or test failure
+9. **AC9 — Build-time data validation stub:** `scripts/validate-data.ts` exists as a stub (minimal validation — e.g., checks that `src/data/` directory exists or that a placeholder check passes); configured as a prebuild step in `package.json` (`"prebuild": "npx tsx scripts/validate-data.ts"` or equivalent); runs before `vite build`
+10. **AC10 — Vercel deployment spike:** Verify that `dist/index.html` can be served correctly as a static site on Vercel (local spike or documented config — `vercel.json` with rewrites if needed); record findings in Dev Notes
+11. **AC11 — Dev server still works:** `npm run dev` serves the app with HMR and path aliases working; the minimal Recharts component renders in dev mode
+12. **AC12 — No regressions from 1A.1:** All design tokens still render; `bg-canvas`, `text-primary`, `border-structural` classes produce correct colors; `prefers-reduced-motion` still works; `npm run build` passes with zero errors
+
+## Tasks / Subtasks
+
+- [ ] Task 1: Configure vite-plugin-singlefile in vite.config.ts (AC: #1)
+  - [ ] Import `vitePluginSingleFile` from `vite-plugin-singlefile` (named import)
+  - [ ] Add to `plugins` array — active in all builds (the plugin itself only inlines in production; dev mode is unaffected)
+  - [ ] Add `<script>` and `<style>` inlining options if needed (default config usually sufficient)
+  - [ ] Run `npm run build` — verify `dist/` contains exactly ONE file: `index.html`
+  - [ ] Verify no `dist/assets/` directory exists (all inlined)
+- [ ] Task 2: Verify browser-openable artifact (AC: #2)
+  - [ ] Open `dist/index.html` directly in browser (double-click or `file://` URL)
+  - [ ] Confirm dark background renders (`#0a0a0f`)
+  - [ ] Confirm "Oil" text is visible with correct typography
+  - [ ] Confirm all CSS custom properties are present in the inlined styles
+- [ ] Task 3: Measure and record bundle baseline (AC: #3)
+  - [ ] Run `ls -la dist/index.html` or `stat dist/index.html` to get file size
+  - [ ] Also measure gzipped size: `gzip -c dist/index.html | wc -c`
+  - [ ] Record both sizes as a comment in `package.json` or create `scripts/bundle-size.txt`
+  - [ ] Expected range: initial scaffold should be well under 500KB gzipped
+- [ ] Task 4: Recharts compatibility spike (AC: #4)
+  - [ ] Create a minimal `src/components/charts/ChartSpike.tsx` with a simple Recharts `<LineChart>` rendering 2 data points using named export
+  - [ ] Import and render `ChartSpike` in `App.tsx` (temporary — will be removed after spike)
+  - [ ] Run `npm run build` — verify build succeeds with Recharts included
+  - [ ] Open `dist/index.html` in browser — verify the line chart renders correctly
+  - [ ] Record go/no-go decision in Dev Notes
+  - [ ] Remove `ChartSpike` from `App.tsx` (keep the spike file for reference but don't render it)
+- [ ] Task 5: Verify no external network calls (AC: #6)
+  - [ ] Open `dist/index.html` in browser
+  - [ ] Open DevTools → Network tab
+  - [ ] Reload the page
+  - [ ] Verify zero outbound network requests (no XHR, no fetch, no resource loading from external domains)
+- [ ] Task 6: Create validate-data.ts stub (AC: #9)
+  - [ ] Create `scripts/validate-data.ts` with minimal validation logic
+  - [ ] The script should: exit with code 0 on success, exit with code 1 and descriptive message on failure
+  - [ ] Initial stub: check that `src/types/index.ts` or `src/data/` paths exist (or a simple placeholder assertion)
+  - [ ] Add `"prebuild": "npx tsx scripts/validate-data.ts"` to `package.json` scripts
+  - [ ] Verify `npm run build` triggers the validation step before Vite build
+  - [ ] The stub will be expanded in Story 1B.6 with full interface and range validation
+- [ ] Task 7: Create GitHub Actions CI workflow (AC: #8)
+  - [ ] Create `.github/workflows/ci.yml`
+  - [ ] Trigger: `on: pull_request: branches: [main]` and `on: push: branches: [main]`
+  - [ ] Job steps: checkout → setup Node.js (20.x or 22.x) → `npm ci` → `npm run lint` → `npx tsc -b` (typecheck) → `npm run test -- --run` (Vitest non-watch mode)
+  - [ ] Ensure CI fails fast on lint errors
+  - [ ] Add a `test` script to `package.json` if not present: `"test": "vitest run"` or `"test": "vitest"`
+  - [ ] Verify workflow syntax is valid YAML
+- [ ] Task 8: Vercel deployment spike (AC: #10)
+  - [ ] Create `vercel.json` with appropriate config for single-file static deployment
+  - [ ] Ensure build command is `npm run build` and output directory is `dist`
+  - [ ] If testing locally: `npx vercel build && npx vercel deploy --prebuilt` or document the expected config
+  - [ ] Record findings: does the single HTML file serve correctly? Any rewrites needed?
+  - [ ] This is a spike — not a production deployment. Just validate the artifact works on Vercel's CDN
+- [ ] Task 9: Verify dev server and no regressions (AC: #11, #12)
+  - [ ] Run `npm run dev` — app loads with HMR
+  - [ ] Verify `@/` path aliases resolve in dev mode
+  - [ ] Verify design tokens: `bg-canvas` → `#0a0a0f`, `text-primary` → `#e5e5ea`, `border-structural` → `#1e1e2a`
+  - [ ] Verify `prefers-reduced-motion` still works (toggle OS setting)
+  - [ ] Run `npm run build` — zero errors
+  - [ ] Run `npm run lint` — zero errors (or pre-existing ones documented)
+
+## Dev Notes
+
+### Previous Story Intelligence (Story 1A.1)
+
+- **Vite scaffold:** Created with `npm create vite@latest . -- --template react-ts` from inside project dir. Required temp directory approach for non-empty dirs.
+- **TypeScript 6.0:** `ignoreDeprecations: "6.0"` added to `tsconfig.app.json` to silence TS5101 (deprecated `baseUrl`). Keep this.
+- **Tailwind 3.4.19:** Locked via `"overrides": { "tailwindcss": "^3.4.19" }` in package.json. Do NOT upgrade.
+- **React 19.2.4:** The Vite template installed React 19, not 18. This is fine — React 19 is backward-compatible and the architecture doc says "18+".
+- **Path aliases:** Configured in `vite.config.ts` (`resolve.alias`), `tsconfig.json` (`compilerOptions.paths`), and `tsconfig.app.json` (`compilerOptions.paths` + `baseUrl`).
+- **Token naming:** Flat naming convention (e.g., `bg-canvas`, NOT `bg-crisis-bg`). This is the authoritative convention established in 1A.1.
+- **Focus ring color:** `#64d2ff` (resolved UX spec conflict — see 1A.1 design decisions).
+- **No `export default`** in `src/` application code. Config files (vite.config.ts, tailwind.config.ts, eslint.config.js) are exempt.
+- **`@apply` only in `index.css`** — never in component CSS files.
+- **Keep `<StrictMode>`** in main.tsx.
+- **Boilerplate removed:** `src/App.css`, `src/assets/` deleted. All styling via Tailwind utilities + `index.css` tokens.
+
+### Architecture Compliance
+
+- **Named exports only** — `ChartSpike` must use `export function ChartSpike()` [Source: project-context.md #2]
+- **Path aliases `@/`** — all imports in spike files must use `@/` prefix [Source: project-context.md #3]
+- **No dataStore** — spike chart renders inline data, no store involvement [Source: project-context.md #1]
+- **Dark theme only** — chart spike must use dark-themed colors from token system [Source: project-context.md #5]
+- **No Framer Motion** — CSS animations only [Source: project-context.md #10]
+- **No inline styles** — except dynamic SVG positioning (not needed for this spike) [Source: project-context.md #14]
+- **Static data** — spike uses hardcoded data array, no API calls [Source: project-context.md #6]
+- **Single-file build** — `vite-plugin-singlefile` inlines everything into one HTML [Source: architecture.md Build Configuration]
+- **CI pipeline** — lint + typecheck + Vitest on every PR via GitHub Actions [Source: architecture.md CI/CD]
+
+### Library & Framework Requirements
+
+| Dependency | Version | Status | Notes |
+|---|---|---|---|
+| vite-plugin-singlefile | ^2.3.2 | Already installed | Configure in vite.config.ts this story |
+| Recharts | ^3.8.1 | Already installed | Spike for single-file compatibility |
+| Vitest | ^4.1.4 | Already installed | Add `test` script to package.json |
+| tsx | NOT installed | Need to install | For running `scripts/validate-data.ts` as prebuild step |
+
+### File Structure Notes
+
+Files created/modified in this story:
+
+```
+oil/
+├── .github/
+│   └── workflows/
+│       └── ci.yml                    # NEW: GitHub Actions CI workflow
+├── scripts/
+│   └── validate-data.ts              # NEW: Prebuild data validation stub
+├── vercel.json                       # NEW: Vercel deployment config (spike)
+├── package.json                      # MODIFIED: Add test + prebuild scripts
+├── vite.config.ts                    # MODIFIED: Add vite-plugin-singlefile
+├── src/
+│   ├── App.tsx                       # MODIFIED: Temporarily render ChartSpike
+│   └── components/
+│       └── charts/
+│           └── ChartSpike.tsx        # NEW: Minimal Recharts spike component
+```
+
+### Recharts Spike Design Decisions
+
+- **Minimal test:** A `<LineChart>` with 2 data points is sufficient to validate Recharts inlines correctly with `vite-plugin-singlefile`
+- **Dark theme:** Use chart colors from the token system — line color via `--accent` (#ff453a) or `--info` (#0a84ff), axis/grid via `--text-muted` (#48484a)
+- **No shared wrappers yet:** Chart wrappers (`ThemedLineChart`, `ChartContainer`) are built in Epic 2. This spike is a bare import to validate build compatibility
+- **Cleanup:** After spike, remove ChartSpike from `App.tsx` rendering but keep the file for reference
+- **Go/no-go criteria:** If Recharts SVG fails to render in the single-file artifact, fallback options are: (a) use Recharts with a different build config, (b) switch to custom SVG for all charts (higher effort, already planned for NodeGraph)
+
+### CI Workflow Design
+
+```
+on: pull_request (main) + push (main)
+    │
+    ├── checkout
+    ├── setup node 20.x
+    ├── npm ci
+    ├── npm run lint          ← ESLint
+    ├── npx tsc -b            ← TypeScript typecheck (via project references)
+    └── npm run test -- --run ← Vitest (non-watch)
+```
+
+- **No Playwright in CI yet** — that's Epic 9. CI runs lint + typecheck + unit tests only.
+- **No Lighthouse CI yet** — that's Epic 9.
+- **Node.js version:** 20.x (LTS). Vite 8 + Tailwind 3.4 support Node 18+, but 20.x is the safe LTS choice.
+- **`npm ci`** for reproducible installs (uses lockfile exactly)
+- **Vitest `--run` flag** ensures non-watch mode in CI
+
+### validate-data.ts Stub Design
+
+- **Purpose:** Stub for build-time data validation — will be expanded in Story 1B.6
+- **Implementation:** Use `tsx` runner (need to install as dev dep) for TypeScript execution
+- **Stub logic:** Check that `src/types/` directory exists or that a placeholder check passes. Exit 0 on success.
+- **Prebuild hook:** `"prebuild": "npx tsx scripts/validate-data.ts"` runs automatically before `npm run build`
+- **Note:** `tsx` is a lightweight TypeScript executor — no compilation step needed. Alternative: write the script in plain JS to avoid the extra dependency.
+
+### Vercel Deployment Spike Notes
+
+- **Single-file artifact:** `dist/index.html` is the entire app — Vercel just needs to serve it
+- **Expected config:** `vercel.json` with `{ "buildCommand": "npm run build", "outputDirectory": "dist" }`
+- **Routing:** Single-page app — all routes should serve `index.html`. But since we have no router (state-driven panels), this may not be needed
+- **This is a spike only** — actual production deployment is Epic 9
+
+### Anti-Patterns to Avoid
+
+- Do NOT use `export default` in spike files or scripts — named exports only
+- Do NOT add any state management (Zustand stores) — that's Story 1B.5
+- Do NOT create real data files — that's Story 1B.4
+- Do NOT add real components beyond the minimal spike — shared components come in Epic 2
+- Do NOT configure Playwright in CI yet — that's Epic 9
+- Do NOT install Lighthouse CI — that's Epic 9
+- Do NOT upgrade Tailwind to v4 — hard constraint
+- Do NOT add barrel files (`index.ts` re-exports) — forbidden by architecture
+
+### Critical Constraints
+
+- **vite-plugin-singlefile must NOT break dev mode** — the plugin should only inline in production builds; dev mode uses standard Vite HMR
+- **Bundle size is informational only** — no budget gates yet (that's Epic 9). Just record the baseline.
+- **validate-data.ts is a stub** — full validation logic comes in Story 1B.6. Keep it simple.
+- **CI workflow should be minimal** — just lint + typecheck + unit tests. No E2E, no performance gates.
+- **Recharts go/no-go is the highest-risk item** — if it fails in single-file build, this blocks the entire chart strategy. Record decision clearly.
+- **Do NOT remove any tokens or config from 1A.1** — this story adds to the scaffold, never removes.
+
+### Testing Standards
+
+- This story does NOT set up the full test infrastructure (that's Story 1B.7)
+- However, the `test` script must be added to `package.json` so CI can run it
+- A minimal smoke test file (e.g., `src/App.test.tsx` rendering a div) should exist so `npm run test` passes
+- Vitest config (`vitest.config.ts`) is deferred to Story 1B.7 — for now, Vitest uses its defaults
+- CI workflow must pass: lint + typecheck + test (even if test suite is minimal)
+
+### References
+
+- [Source: _bmad-output/planning-artifacts/epics.md#Epic 1A — Story 1A.2]
+- [Source: _bmad-output/planning-artifacts/architecture.md#Build Configuration — vite-plugin-singlefile]
+- [Source: _bmad-output/planning-artifacts/architecture.md#CI/CD — GitHub Actions]
+- [Source: _bmad-output/planning-artifacts/architecture.md#Build Process diagram]
+- [Source: _bmad-output/planning-artifacts/architecture.md#Deployment — Vercel]
+- [Source: _bmad-output/planning-artifacts/architecture.md#Build-time data validation]
+- [Source: _bmad-output/project-context.md #3 — Path aliases in both tsconfig and vite.config]
+- [Source: _bmad-output/project-context.md #19 — Single file build output]
+- [Source: _bmad-output/project-context.md #20 — No environment variables]
+- [Source: _bmad-output/implementation-artifacts/1a-1-project-scaffold-dependencies-design-tokens.md — Previous story learnings]
+- [Source: AGENTS.md — Tailwind 3.4 locked, named exports, single-file build]
+
+## Dev Agent Record
+
+### Agent Model Used
+
+{{agent_model_name_version}}
+
+### Debug Log References
+
+### Completion Notes List
+
+### File List
