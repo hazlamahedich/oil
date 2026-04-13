@@ -41,7 +41,7 @@ import type {
   DataPointSelectResult,
   PresetScenario,
   DataFreshnessThreshold,
-  CeasefireStatusType as _CeasefireStatusType,
+
 } from '@/types';
 
 const _allTypes: unknown[] = [
