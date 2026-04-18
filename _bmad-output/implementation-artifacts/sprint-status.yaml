@@ -35,7 +35,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-04-12
-last_updated: 2026-04-13  # Story 1b-2 done after code review
+last_updated: 2026-04-18  # Story 1b-3 code review complete, all patches applied
 project: oil
 project_key: NOKEY
 tracking_system: file-system
@@ -54,7 +54,7 @@ development_status:
   epic-1b: in-progress
   1b-1-typescript-interfaces-frozen-contracts: done
   1b-2-constants-format-utilities: done
-  1b-3-motion-accessibility-utilities: backlog
+  1b-3-motion-accessibility-utilities: done
   1b-4-data-files-with-real-data: backlog
   1b-5-zustand-stores: backlog
   1b-6-build-time-data-validation: backlog

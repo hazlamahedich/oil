@@ -512,3 +512,14 @@ export interface DataFreshnessThreshold {
   maxAgeDays: number;
   dataTypes: string[];
 }
+
+/**
+ * Two-tier motion preference for animation control.
+ * A third tier 'minimal' will be added by Story 8-6b when
+ * data-motion attribute infrastructure exists.
+ *
+ * @consumers Epics 2–7 (all panels with animations)
+ * @fr NFR-15, UX-DR70-71
+ * @see MOTION_CONFIGS in src/hooks/useMotionPreference.ts
+ */
+export type MotionTier = 'full' | 'reduced';

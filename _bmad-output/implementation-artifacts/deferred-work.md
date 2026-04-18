@@ -48,3 +48,8 @@
 - **`formatDate` accepts semantically invalid dates like "2026-02-30"** — Spec explicitly states "structural regex only — does NOT validate real calendar dates." Intentional design choice. [src/utils/format.ts:92-98]
 - **`SIMULATION_RANGES` `as const` may be redundant with type annotation** — Pre-existing design choice with no runtime impact. Both annotation and assertion are present; no behavior difference. [src/utils/constants.ts:38-44]
 - **No invariant test for `SIMULATION_DEFAULTS` within `SIMULATION_RANGES` bounds** — Cross-constant invariant testing adds coupling between independent constants. Defaults and ranges are independently specified by FR requirements.
+
+## Deferred from: code review of 1b-3-motion-accessibility-utilities (2026-04-18)
+
+- **Module-scoped `activeAnnouncements` Map can hold stale references across HMR cycles** [src/utils/a11y.ts:8] — Dev-only memory leak, no production impact. HMR re-evaluates the module but old map entries retain references to DOM elements removed by HMR.
+- **Mock fires change events on no-op state transitions** [src/test-utils/create-match-media-mock.ts:27-31] — `setMatches(true)` when already `true` still fires listeners. Real `MediaQueryList` only fires on actual state changes. Test fidelity concern, not a production issue.
