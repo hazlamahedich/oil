@@ -251,6 +251,10 @@ describe('TypeScript interface contracts (Story 1B.1)', () => {
     expectTypeOf<DataPointSelectCallback>().toBeFunction();
   });
 
+  it('KPIData has label field (Story 1B.4 Task 0a)', () => {
+    expectTypeOf<KPIData>().toHaveProperty('label');
+  });
+
   it('KPIStatus has correct values', () => {
     const statuses: KPIStatus[] = ['critical', 'warning', 'stable', 'improving'];
     expect(statuses).toHaveLength(4);

@@ -53,3 +53,14 @@
 
 - **Module-scoped `activeAnnouncements` Map can hold stale references across HMR cycles** [src/utils/a11y.ts:8] — Dev-only memory leak, no production impact. HMR re-evaluates the module but old map entries retain references to DOM elements removed by HMR.
 - **Mock fires change events on no-op state transitions** [src/test-utils/create-match-media-mock.ts:27-31] — `setMatches(true)` when already `true` still fires listeners. Real `MediaQueryList` only fires on actual state changes. Test fidelity concern, not a production issue.
+
+## Deferred from: code review of 1b-4-data-files-with-real-data (2026-04-18)
+
+- **`as PolicyResponseType` / `as SeverityLevel` casts bypass compile-time validation** — String literal union types require casts; TypeScript cannot infer string literal from object literal assignment. Safe and expected per AC5 exception. Could use `satisfies` for extra safety in future.
+- **No validation for position coordinates (0–1 range)** — Current data is correct (all within range). No enforcement in `__validation.ts`. Enhancement for future story.
+- **No validation that all CASCADE_NODE_IDS constants are used as nodes** — Currently 19/19 match. No enforcement. Enhancement for future story.
+- **KPI `previousValue: 0.0` creates division-by-zero surface** — 4/6 KPIs have zero baseline. Downstream consumers must guard against division by zero when computing `% change`. Consumer responsibility.
+- **`tollCharges` embeds structured data in unparseable string** — `CeasefireStatus` interface defines field as `string`. Future interface enhancement could split into numeric fields.
+- **TIMELINE_EVENTS 21-day gap (Dec 16→Jan 6) and 2-month gap (Feb 4→Apr 9)** — Timeline has sparse coverage during de-escalation and ceasefire periods. Data enrichment for future iteration.
+- **No validation for duplicate node IDs in SUPPLY_CHAIN_NODES** — Current data has 19 unique IDs. Enhancement for future story.
+- **AC8: Pre-crisis oil prices below $80 floor ($74.50 Brent, $70.20 WTI)** — Pre-crisis baselines are realistic ($75 range was actual Brent in Oct 2025). Spec likely intended crisis-affected range only.

@@ -252,6 +252,7 @@ export type SimulationResult = SimulationInput & { outputs: SimulationOutput };
  * @see KPIStatus, TrendDirection
  */
 export interface KPIData {
+  label: string;
   value: number;
   previousValue?: number;
   unit?: string;
